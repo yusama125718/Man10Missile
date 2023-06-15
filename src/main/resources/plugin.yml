@@ -1,0 +1,15 @@
+name: Man10Missile
+version: '${project.version}'
+main: yusama125718.man10missile.Man10Missile
+api-version: 1.19
+
+commands:
+  mmissile:
+    description: Man10Missile
+    usage: aaa
+
+permissions:
+  mmissile.op:
+    default: op
+  mmissile.p:
+    default: op
