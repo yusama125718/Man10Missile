@@ -2,7 +2,11 @@ package yusama125718.man10missile;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,11 +47,29 @@ public class Config {
             List<String> S_command = new ArrayList<>();
             List<String> SC_command = new ArrayList<>();
             List<String> C_command = new ArrayList<>();
+            List<String> runnable = new ArrayList<>();
+            int amount = 0;
+            Particle particle = Particle.LAVA;
+            ItemStack head = null;
             if (yml.get("command") != null) command = yml.getStringList("command");
             if (yml.get("S_command") != null) S_command = yml.getStringList("S_command");
             if (yml.get("SC_command") != null) SC_command = yml.getStringList("SC_command");
             if (yml.get("C_command") != null) C_command = yml.getStringList("C_command");
-            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command));
+            if (yml.get("runnable") != null) runnable = yml.getStringList("runnable");
+            if (yml.get("particle.particle") != null) {
+                String p = yml.getString("particle.particle");
+                particle = Particle.valueOf(p);
+            }
+            if (yml.get("head.material") != null) {
+                head = new ItemStack(Material.valueOf(yml.getString("head.material")));
+                if (yml.get("head.cmd") != null) {
+                    ItemMeta meta = head.getItemMeta();
+                    meta.setCustomModelData(yml.getInt("head.cmd"));
+                    head.setItemMeta(meta);
+                }
+            }
+            if (yml.get("particle.amount") != null) amount = yml.getInt("particle.amount");
+            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command, runnable, particle, amount, head));
         }
     }
 }

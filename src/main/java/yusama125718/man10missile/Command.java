@@ -5,6 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import static yusama125718.man10missile.Man10Missile.*;
@@ -83,11 +86,20 @@ public class Command implements CommandExecutor {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), com);
                         }
                     }
-                    players.put(((Player) sender).getUniqueId(), new MissilePlayer(target, ((Player) sender).getLocation()));
+                    PotionEffect p = ((Player) sender).getPotionEffect(PotionEffectType.INVISIBILITY);
+                    int d = 0;
+                    if (p != null) d = p.getDuration();
+                    ItemStack head = ((Player) sender).getInventory().getHelmet();
+                    if (target.head != null) {
+                        ((Player) sender).getInventory().setHelmet(target.head.clone());
+                        ((Player) sender).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, target.time.intValue() * 20, 1));
+                    }
+                    players.put(((Player) sender).getUniqueId(), new MissilePlayer(target, ((Player) sender).getLocation(), head, d));
                     Location l = ((Player) sender).getLocation();
                     l.setY(l.getY() + 2);
                     l.setPitch(-90F);
                     ((Player) sender).teleport(l);
+                    ((Player) sender).setAllowFlight(true);
                     new Runnable(((Player) sender).getUniqueId()).runTaskTimer(mmissile,0 , period);
                     return true;
                 }
@@ -122,11 +134,20 @@ public class Command implements CommandExecutor {
                             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), com);
                         }
                     }
-                    players.put(player.getUniqueId(), new MissilePlayer(target, player.getLocation()));
+                    PotionEffect p = player.getPotionEffect(PotionEffectType.INVISIBILITY);
+                    int d = 0;
+                    if (p != null) d = p.getDuration();
+                    ItemStack head = player.getInventory().getHelmet();
+                    if (target.head != null){
+                        player.getInventory().setHelmet(target.head.clone());
+                        ((Player) sender).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, target.time.intValue() * 20, 1));
+                    }
+                    players.put(player.getUniqueId(), new MissilePlayer(target, player.getLocation(), head, d));
                     Location l = player.getLocation();
                     l.setY(l.getY() + 2);
                     l.setPitch(-90F);
                     player.teleport(l);
+                    ((Player) sender).setAllowFlight(true);
                     new Runnable(player.getUniqueId()).runTaskTimer(mmissile,0 , period);
                     return true;
                 }

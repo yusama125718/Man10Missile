@@ -1,13 +1,13 @@
 package yusama125718.man10missile;
 
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.ChatMessageType;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
@@ -16,43 +16,58 @@ import static yusama125718.man10missile.Man10Missile.*;
 public class Runnable extends BukkitRunnable {
 
     private final UUID p;
+    private final MissilePlayer m;
 
     public Runnable(UUID P){
         p = P;
+        m = players.get(p);
     }
 
     @Override
     public void run() {
-        if (!system || players.get(p).finish){
+        if (!system || m.finish || Bukkit.getPlayer(p) == null){
             if (Bukkit.getPlayer(p) != null) Finish();
-            new RemovePlayer(p).runTaskLater(mmissile, 2);
+            players.remove(p);
             this.cancel();
+            return;
         }
         if (!(Bukkit.getPlayer(p).getLocation().add(0, -1, 0).getBlock().getType().equals(Material.AIR))){
             Finish();
             this.cancel();
+            return;
+        }
+        for (String c : m.profile.runnable){
+            String command = c.replace("<player>", Bukkit.getPlayer(p).getName());
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
         Location loc = Bukkit.getPlayer(p).getLocation();
-        Bukkit.getPlayer(p).setVelocity(loc.getDirection().multiply(players.get(p).profile.vector));
-        Bukkit.getPlayer(p).sendActionBar(Component.text("経過時間：" + String.format("%.1f", players.get(p).time) + " / " + players.get(p).profile.time));
-        players.get(p).time += period / 20.0;
-        if (players.get(p).time >= players.get(p).profile.time){
+        if (m.profile.amount != 0) Bukkit.getPlayer(p).getLocation().getWorld().spawnParticle(m.profile.particle, Bukkit.getPlayer(p).getLocation(),m.profile.amount,0,2,0);
+        Bukkit.getPlayer(p).setVelocity(loc.getDirection().multiply(m.profile.vector));
+        Bukkit.getPlayer(p).sendActionBar(Component.text("経過時間：" + String.format("%.1f", m.time) + " / " + m.profile.time));
+        m.time += period / 20.0;
+        if (m.time >= players.get(p).profile.time){
             Finish();
             this.cancel();
         }
     }
 
     private void Finish(){
-        for (String c : players.get(p).profile.command){
+        for (String c : m.profile.command){
             String command = c.replace("<player>", Bukkit.getPlayer(p).getName());
             Bukkit.getPlayer(p).performCommand(command);
         }
-        for (String c : players.get(p).profile.console_command){
+        for (String c : m.profile.console_command){
             String command = c.replace("<player>", Bukkit.getPlayer(p).getName());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
-        Bukkit.getPlayer(p).sendActionBar(Component.text(""));
+        if (m.profile.head != null) Bukkit.getPlayer(p).removePotionEffect(PotionEffectType.INVISIBILITY);
+        if (m.head != null) Bukkit.getPlayer(p).getInventory().setHelmet(m.head.clone());
+        else Bukkit.getPlayer(p).getInventory().setHelmet(new ItemStack(Material.AIR));
+        if (m.invisibility != 0) Bukkit.getPlayer(p).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY ,m.invisibility ,1));
         Bukkit.getPlayer(p).teleport(players.get(p).startloc);
-        new RemovePlayer(p).runTaskLater(mmissile, 2);
+        Bukkit.getPlayer(p).setAllowFlight(false);
+        Bukkit.getPlayer(p).setFallDistance(0F);
+        Bukkit.getPlayer(p).sendActionBar(Component.text(""));
+        players.remove(p);
     }
 }
