@@ -69,8 +69,9 @@ public final class Man10Missile extends JavaPlugin implements EventListener {
         public List<String> console_command;
         public ItemStack head;
         public Explosion.Settings bomb;
+        public Integer downmode;
 
-        public Missile(String NAME, Double TIME, Double VECTOR, List<String> COMMAND, List<String> S_COMMAND, List<String> SC_COMMAND, List<String> C_COMMAND, List<String> RUNNABLE, Particle Particle, Integer Amount, ItemStack HEAD, Explosion.Settings Bomb){
+        public Missile(String NAME, Double TIME, Double VECTOR, List<String> COMMAND, List<String> S_COMMAND, List<String> SC_COMMAND, List<String> C_COMMAND, List<String> RUNNABLE, Particle Particle, Integer Amount, ItemStack HEAD, Explosion.Settings Bomb, Integer Down){
             name = NAME;
             time = TIME;
             vector = VECTOR;
@@ -83,6 +84,7 @@ public final class Man10Missile extends JavaPlugin implements EventListener {
             amount = Amount;
             head = HEAD;
             bomb = Bomb;
+            downmode = Down;
         }
     }
 

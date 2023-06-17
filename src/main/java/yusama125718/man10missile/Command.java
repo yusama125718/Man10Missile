@@ -77,6 +77,10 @@ public class Command implements CommandExecutor {
                         sender.sendMessage(prefix + "そのミサイルは存在しません");
                         return true;
                     }
+                    if (players.containsKey(((Player) sender).getUniqueId())){
+                        sender.sendMessage(prefix + "すでに発射中です");
+                        return true;
+                    }
                     if (target.start_command != null){
                         for (String c : target.start_command){
                             String com = c.replace("<player>", sender.getName());
@@ -99,8 +103,14 @@ public class Command implements CommandExecutor {
                     }
                     players.put(((Player) sender).getUniqueId(), new MissilePlayer(target, ((Player) sender).getLocation(), head, d));
                     Location l = ((Player) sender).getLocation();
-                    l.setY(l.getY() + 2);
-                    l.setPitch(-90F);
+                    if (target.downmode == 0){
+                        l.setY(l.getY() + 2);
+                        l.setPitch(-90F);
+                    }
+                    else {
+                        l.setY(l.getY() + target.downmode);
+                        l.setPitch(90F);
+                    }
                     ((Player) sender).teleport(l);
                     ((Player) sender).setAllowFlight(true);
                     new Runnable(((Player) sender).getUniqueId()).runTaskTimer(mmissile,0 , period);
@@ -125,6 +135,10 @@ public class Command implements CommandExecutor {
                         sender.sendMessage(prefix + "そのプレイヤーは存在しません");
                         return true;
                     }
+                    if (players.containsKey(player.getUniqueId())){
+                        sender.sendMessage(prefix + "すでに発射中です");
+                        return true;
+                    }
                     if (target.start_command != null){
                         for (String c : target.start_command){
                             String com = c.replace("<player>", player.getName());
@@ -147,8 +161,14 @@ public class Command implements CommandExecutor {
                     }
                     players.put(player.getUniqueId(), new MissilePlayer(target, player.getLocation(), head, d));
                     Location l = player.getLocation();
-                    l.setY(l.getY() + 2);
-                    l.setPitch(-90F);
+                    if (target.downmode == 0){
+                        l.setY(l.getY() + 2);
+                        l.setPitch(-90F);
+                    }
+                    else {
+                        l.setY(l.getY() + target.downmode);
+                        l.setPitch(90F);
+                    }
                     player.teleport(l);
                     ((Player) sender).setAllowFlight(true);
                     new Runnable(player.getUniqueId()).runTaskTimer(mmissile,0 , period);

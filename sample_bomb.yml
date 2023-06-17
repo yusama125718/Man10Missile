@@ -1,5 +1,5 @@
-name: "samplebomb"
-armor: true
-team: true
-radius: 10
-damage: 10
+name: "samplebomb"  #内部名
+armor: true  #アーマーを考慮するか(falseで貫通します)
+team: true  #同一チームにいる場合にダメージを与えないようにするか
+radius: 10  #爆発半径
+damage: 10  #ダメージ量

@@ -41,9 +41,12 @@ public class Explosion {
         for (Player t : p.getWorld().getPlayers()){
             if (t.getGameMode().equals(GameMode.CREATIVE) || t.getGameMode().equals(GameMode.SPECTATOR) || team.contains(t) || t.equals(p)) continue;
             Location tloc = t.getLocation();
-            if (!(ploc.getX() - set.radius < tloc.getX() && ploc.getX() + set.radius > tloc.getX() && ploc.getY() - set.radius < tloc.getY() && ploc.getY() + set.radius > tloc.getY() && ploc.getZ() - set.radius < tloc.getZ() && ploc.getZ() + set.radius > tloc.getZ()))  return;
+            if (ploc.distance(tloc) > set.radius) continue;
             if (set.armor) t.damage(set.damage);
-            else t.setHealth(t.getHealth() - set.damage);
+            else {
+                if (p.getHealth() < set.damage) t.setHealth(0);
+                else t.setHealth(t.getHealth() - set.damage);
+            }
         }
     }
 }

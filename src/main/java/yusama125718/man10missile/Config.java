@@ -88,6 +88,7 @@ public class Config {
             Particle particle = Particle.LAVA;
             ItemStack head = null;
             Explosion.Settings bomb = null;
+            int down = 0;
             if (yml.get("command") != null) command = yml.getStringList("command");
             if (yml.get("S_command") != null) S_command = yml.getStringList("S_command");
             if (yml.get("SC_command") != null) SC_command = yml.getStringList("SC_command");
@@ -110,7 +111,8 @@ public class Config {
                 String bomb_name = yml.getString("bomb");
                 for (Explosion.Settings s : bombs) if (s.name.equals(bomb_name)) bomb = s;
             }
-            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command, runnable, particle, amount, head, bomb));
+            if (yml.get("downmode") != null) down = yml.getInt("downmode");
+            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command, runnable, particle, amount, head, bomb, down));
         }
     }
 }

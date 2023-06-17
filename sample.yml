@@ -1,22 +1,25 @@
-name: "test"
-time: 20
-vector: 1.5
-SC_command:
+name: "test"  #内部名。呼び出しに使う。
+time: 20  #最大飛翔時間(秒)
+vector: 1.5  #加速度
+SC_command:  #スタート時に実行されるコンソールコマンド ※無くても可
 - "playsound minecraft:entity.srrow.shoot master @a ~ ~ ~ 2"
-S_command:
+S_command:  #スタート時に実行されるコマンド ※無くても可
 - "mcr help"
-C_command:
+C_command:  #終了時に実行されるコンソールコマンド(bombと書くと爆発させれます) ※無くても可
 - "bomb"
 - "playsound minecraft:entity.srrow.hit_player master @a ~ ~ ~ 2"
-command:
+command:  #終了時に実行されるコマンド(bombと書くと爆発させれます) ※無くても可
 - "mta"
 - "mta record <player>"
-particle:
+particle:  #トレイル用パーティクル ※無くても可
   particle: "LAVA"
   amount: 3
-head:
+head:  #見た目(書かなかった場合プレイヤーは透明化せず、通常のまま飛ぶ) ※無くても可
   material: "STONE_HOE"
   cmd: 268
-runnable: 
+runnable:  #飛翔中実行されるコンソールコマンド ※無くても可
 - "playsound minecraft:entity.firework_rocket.shoot master <player> ~ ~ ~ 2"
-bomb: "samplebomb"
+bomb: "samplebomb"  #使用する爆発設定 ※無くても可
+downmode: 0  #0以外の数字にすると打ち下ろしとなり、数字分上空から真下を向いてスタートする ※無くても可
+
+#コマンドは全て<player>と入力するとplayerのmcidになります
