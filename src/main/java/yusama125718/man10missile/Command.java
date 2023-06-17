@@ -35,10 +35,13 @@ public class Command implements CommandExecutor {
                 else if (args[0].equals("reload") && sender.hasPermission("mmissile.op")){
                     system = false;
                     missiles.clear();
+                    bombs.clear();
                     players.clear();
                     system = mmissile.getConfig().getBoolean("system");
                     prefix = mmissile.getConfig().getString("prefix");
                     period = mmissile.getConfig().getInt("period");
+                    Config.LoadBombYaml();
+                    Config.LoadBombYaml();
                     Config.LoadFile();
                     Config.LoadYaml();
                     sender.sendMessage(prefix+"リロードしました");

@@ -53,10 +53,20 @@ public class Runnable extends BukkitRunnable {
 
     private void Finish(){
         for (String c : m.profile.command){
+            if (c.equals("bomb")) {
+                if (m.profile.bomb == null) continue;
+                Explosion.Bomb(Bukkit.getPlayer(p), m.profile.bomb);
+                continue;
+            }
             String command = c.replace("<player>", Bukkit.getPlayer(p).getName());
             Bukkit.getPlayer(p).performCommand(command);
         }
         for (String c : m.profile.console_command){
+            if (c.equals("bomb")) {
+                if (m.profile.bomb == null) continue;
+                Explosion.Bomb(Bukkit.getPlayer(p), m.profile.bomb);
+                continue;
+            }
             String command = c.replace("<player>", Bukkit.getPlayer(p).getName());
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }

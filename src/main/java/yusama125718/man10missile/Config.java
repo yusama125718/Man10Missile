@@ -17,6 +17,26 @@ import static yusama125718.man10missile.Man10Missile.*;
 
 public class Config {
     private static final File folder = new File(mmissile.getDataFolder().getAbsolutePath() + File.separator + "mmissiles");
+    private static final File bombfolder = new File(mmissile.getDataFolder().getAbsolutePath() + File.separator + "bomb");
+    private static File configfile;
+    private static File bombfile;
+
+    public static void LoadBombFile(){
+        if (mmissile.getDataFolder().listFiles() != null){
+            for (File file : Objects.requireNonNull(mmissile.getDataFolder().listFiles())) {
+                if (file.getName().equals("bomb")) {
+                    bombfile = file;
+                    return;
+                }
+            }
+        }
+        if (bombfolder.mkdir()) {
+            Bukkit.broadcast(Component.text(prefix + "§rステージフォルダを作成しました"), "mmissile.op");
+            bombfile = bombfolder;
+        } else {
+            Bukkit.broadcast(Component.text(prefix + "§rステージフォルダの作成に失敗しました"), "mmissile.op");
+        }
+    }
 
     public static void LoadFile(){
         if (mmissile.getDataFolder().listFiles() != null){
@@ -32,6 +52,22 @@ public class Config {
             configfile = folder;
         } else {
             Bukkit.broadcast(Component.text(prefix + "§rステージフォルダの作成に失敗しました"), "mmissile.op");
+        }
+    }
+
+    public static void LoadBombYaml(){
+        if (bombfile.listFiles() == null) return;
+        for (File file : bombfile.listFiles()){
+            YamlConfiguration yml =  YamlConfiguration.loadConfiguration(file);
+            if (yml.get("name") == null || yml.get("radius") == null || yml.get("damage") == null) continue;
+            String name = yml.getString("name");
+            Double damage = yml.getDouble("damage");
+            Double radius = yml.getDouble("radius");
+            boolean armor = true;
+            if (yml.get("armor") != null) armor = yml.getBoolean("armor");
+            boolean team = false;
+            if (yml.get("team") != null) team = yml.getBoolean("team");
+            bombs.add(new Explosion.Settings(name, armor, team, radius, damage));
         }
     }
 
@@ -51,6 +87,7 @@ public class Config {
             int amount = 0;
             Particle particle = Particle.LAVA;
             ItemStack head = null;
+            Explosion.Settings bomb = null;
             if (yml.get("command") != null) command = yml.getStringList("command");
             if (yml.get("S_command") != null) S_command = yml.getStringList("S_command");
             if (yml.get("SC_command") != null) SC_command = yml.getStringList("SC_command");
@@ -69,7 +106,11 @@ public class Config {
                 }
             }
             if (yml.get("particle.amount") != null) amount = yml.getInt("particle.amount");
-            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command, runnable, particle, amount, head));
+            if (yml.get("bomb") != null) {
+                String bomb_name = yml.getString("bomb");
+                for (Explosion.Settings s : bombs) if (s.name.equals(bomb_name)) bomb = s;
+            }
+            missiles.add(new Missile(name, time, vector, command, S_command, SC_command, C_command, runnable, particle, amount, head, bomb));
         }
     }
 }

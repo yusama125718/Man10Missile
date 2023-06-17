@@ -1,0 +1,5 @@
+name: "samplebomb"
+armor: true
+team: true
+radius: 10
+damage: 10

@@ -6,6 +6,7 @@ SC_command:
 S_command:
 - "mcr help"
 C_command:
+- "bomb"
 - "playsound minecraft:entity.srrow.hit_player master @a ~ ~ ~ 2"
 command:
 - "mta"
@@ -18,3 +19,4 @@ head:
   cmd: 268
 runnable: 
 - "playsound minecraft:entity.firework_rocket.shoot master <player> ~ ~ ~ 2"
+bomb: "samplebomb"
