@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
@@ -96,12 +97,13 @@ public class Command implements CommandExecutor {
                     PotionEffect p = ((Player) sender).getPotionEffect(PotionEffectType.INVISIBILITY);
                     int d = 0;
                     if (p != null) d = p.getDuration();
-                    ItemStack head = ((Player) sender).getInventory().getHelmet();
+                    ItemStack[] inv = ((Player) sender).getInventory().getContents();
+                    ((Player) sender).getInventory().clear();
                     if (target.head != null) {
                         ((Player) sender).getInventory().setHelmet(target.head.clone());
                         ((Player) sender).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, target.time.intValue() * 20, 1));
                     }
-                    players.put(((Player) sender).getUniqueId(), new MissilePlayer(target, ((Player) sender).getLocation(), head, d));
+                    players.put(((Player) sender).getUniqueId(), new MissilePlayer(target, ((Player) sender).getLocation(), inv, d));
                     Location l = ((Player) sender).getLocation();
                     if (target.downmode == 0){
                         l.setY(l.getY() + 2);
@@ -154,12 +156,13 @@ public class Command implements CommandExecutor {
                     PotionEffect p = player.getPotionEffect(PotionEffectType.INVISIBILITY);
                     int d = 0;
                     if (p != null) d = p.getDuration();
-                    ItemStack head = player.getInventory().getHelmet();
+                    ItemStack[] inv = player.getInventory().getContents();
+                    player.getInventory().clear();
                     if (target.head != null){
                         player.getInventory().setHelmet(target.head.clone());
                         ((Player) sender).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, target.time.intValue() * 20, 1));
                     }
-                    players.put(player.getUniqueId(), new MissilePlayer(target, player.getLocation(), head, d));
+                    players.put(player.getUniqueId(), new MissilePlayer(target, player.getLocation(), inv, d));
                     Location l = player.getLocation();
                     if (target.downmode == 0){
                         l.setY(l.getY() + 2);

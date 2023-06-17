@@ -31,7 +31,8 @@ public class Explosion {
         p.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, ploc, 20);
         List<Player> team = new ArrayList<>();
         if (set.team){
-            for (Team t : p.getScoreboard().getTeams()){
+            for (Team t : Bukkit.getScoreboardManager().getMainScoreboard().getTeams()){
+                if (!t.getEntries().contains(p.getName())) continue;
                 for (String m : t.getEntries()){
                     Player x = Bukkit.getPlayer(m);
                     if (x != null) team.add(x);
@@ -42,7 +43,7 @@ public class Explosion {
             if (t.getGameMode().equals(GameMode.CREATIVE) || t.getGameMode().equals(GameMode.SPECTATOR) || team.contains(t) || t.equals(p)) continue;
             Location tloc = t.getLocation();
             if (ploc.distance(tloc) > set.radius) continue;
-            if (set.armor) t.damage(set.damage);
+            if (set.armor) t.damage(set.damage, p);
             else {
                 if (p.getHealth() < set.damage) t.setHealth(0);
                 else t.setHealth(t.getHealth() - set.damage);

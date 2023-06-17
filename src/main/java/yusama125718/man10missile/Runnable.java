@@ -71,8 +71,8 @@ public class Runnable extends BukkitRunnable {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
         }
         if (m.profile.head != null) Bukkit.getPlayer(p).removePotionEffect(PotionEffectType.INVISIBILITY);
-        if (m.head != null) Bukkit.getPlayer(p).getInventory().setHelmet(m.head.clone());
-        else Bukkit.getPlayer(p).getInventory().setHelmet(new ItemStack(Material.AIR));
+        Bukkit.getPlayer(p).getInventory().clear();
+        Bukkit.getPlayer(p).getInventory().setContents(m.inv);
         if (m.invisibility != 0) Bukkit.getPlayer(p).addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY ,m.invisibility ,1));
         Bukkit.getPlayer(p).teleport(players.get(p).startloc);
         Bukkit.getPlayer(p).setAllowFlight(false);

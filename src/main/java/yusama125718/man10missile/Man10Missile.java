@@ -1,19 +1,26 @@
 package yusama125718.man10missile;
 
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public final class Man10Missile extends JavaPlugin implements EventListener {
+public final class Man10Missile extends JavaPlugin implements EventListener, @NotNull Listener {
 
     public static JavaPlugin mmissile;
     public static List<Missile> missiles = new ArrayList<>();
@@ -26,6 +33,7 @@ public final class Man10Missile extends JavaPlugin implements EventListener {
     @Override
     public void onEnable() {
         mmissile = this;
+        getServer().getPluginManager().registerEvents(this, this);
         mmissile.saveDefaultConfig();
         system = mmissile.getConfig().getBoolean("system");
         prefix = mmissile.getConfig().getString("prefix");
@@ -37,21 +45,20 @@ public final class Man10Missile extends JavaPlugin implements EventListener {
         getCommand("mmissile").setExecutor(new Command());
     }
 
-
     public static class MissilePlayer{
         public Missile profile;
         public Double time;
         public Boolean finish;
         public Location startloc;
-        public ItemStack head;
+        public ItemStack[] inv;
         public Integer invisibility;
 
-        public MissilePlayer(Missile PROFILE, Location LOC, ItemStack HEAD, Integer INVISIBILITY){
+        public MissilePlayer(Missile PROFILE, Location LOC, ItemStack[] INV, Integer INVISIBILITY){
             time = (double) 0;
             profile = PROFILE;
             finish = false;
             startloc = LOC;
-            head = HEAD;
+            inv = INV;
             invisibility = INVISIBILITY;
         }
     }
@@ -93,12 +100,23 @@ public final class Man10Missile extends JavaPlugin implements EventListener {
         if (!players.containsKey(e.getPlayer().getUniqueId())) return;
         players.get(e.getPlayer().getUniqueId()).finish = true;
         if (players.get(e.getPlayer().getUniqueId()).profile.head != null) e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1, 1));
-        if (players.get(e.getPlayer().getUniqueId()).head != null) e.getPlayer().getInventory().setHelmet(players.get(e.getPlayer().getUniqueId()).head.clone());
-        else e.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
+        e.getPlayer().getInventory().clear();
+        e.getPlayer().getInventory().setContents(players.get(e.getPlayer().getUniqueId()).inv);
     }
 
     @EventHandler
     public static void InventoryClick(InventoryClickEvent e){
         if (players.containsKey(e.getWhoClicked().getUniqueId())) e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public static void PlayerDeathEvent(PlayerDeathEvent e){
+        if (!players.containsKey(e.getPlayer().getUniqueId())) return;
+        players.remove(e.getPlayer().getUniqueId());
+        players.get(e.getPlayer().getUniqueId()).finish = true;
+        if (players.get(e.getPlayer().getUniqueId()).profile.head != null) e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 1, 1));
+        e.getPlayer().getInventory().clear();
+        e.getPlayer().getInventory().setContents(players.get(e.getPlayer().getUniqueId()).inv);
+        e.setCancelled(true);
     }
 }
